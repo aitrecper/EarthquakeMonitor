@@ -1,15 +1,15 @@
 package recio.aitor.earthquakemonitor
 
-import android.annotation.SuppressLint
+
+import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import recio.aitor.earthquakemonitor.databinding.EqListItemBinding
 
+private val TAG = EqAdapter::class.java.simpleName
 class EqAdapter : ListAdapter<Earthquake, EqAdapter.EqViewHolder>(DiffCallback()) {
 
     private class DiffCallback : DiffUtil.ItemCallback<Earthquake>() {
@@ -21,6 +21,7 @@ class EqAdapter : ListAdapter<Earthquake, EqAdapter.EqViewHolder>(DiffCallback()
             oldItem == newItem
     }
 
+    lateinit var onItemClickListener: (Earthquake) -> Unit
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) : EqAdapter.EqViewHolder {
 
         val binding = EqListItemBinding.inflate(LayoutInflater.from(parent.context))
@@ -42,6 +43,13 @@ class EqAdapter : ListAdapter<Earthquake, EqAdapter.EqViewHolder>(DiffCallback()
 
             binding.eqMagnitudeText.text = earthquake.magnitude.toString()
             binding.eqPlaceText.text = earthquake.place
+            binding.root.setOnClickListener(){
+                if(::onItemClickListener.isInitialized)
+                    onItemClickListener(earthquake)
+                else
+                    Log.e(TAG, "onItemClickListener not initialized")
+            }
+            binding.executePendingBindings()
         }
     }
 }
