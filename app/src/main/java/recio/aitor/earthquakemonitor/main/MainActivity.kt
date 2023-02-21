@@ -1,4 +1,4 @@
-package recio.aitor.earthquakemonitor
+package recio.aitor.earthquakemonitor.main
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -7,6 +7,7 @@ import android.widget.Toast
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
+import recio.aitor.earthquakemonitor.Earthquake
 import recio.aitor.earthquakemonitor.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -16,7 +17,7 @@ class MainActivity : AppCompatActivity() {
         val binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val adapter = EqAdapter()
+        val adapter = EqAdapter(this)
         binding.eqRecycler.adapter = adapter
 
         binding.eqRecycler.layoutManager = LinearLayoutManager(this)
