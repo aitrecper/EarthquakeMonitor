@@ -1,5 +1,6 @@
 package recio.aitor.earthquakemonitor.database
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import recio.aitor.earthquakemonitor.Earthquake
 
@@ -10,7 +11,7 @@ interface EqDAO {
     fun insertAll(eqList: MutableList<Earthquake>)
 
     @Query("SELECT * FROM earthquakes")
-    fun getEarthquakes(): MutableList<Earthquake>
+    fun getEarthquakes(): LiveData<MutableList<Earthquake>>
 
     @Query("SELECT * FROM earthquakes WHERE magnitude > :magnitude")
     fun getEarthquakesWithMagnitude(magnitude: Double): MutableList<Earthquake>

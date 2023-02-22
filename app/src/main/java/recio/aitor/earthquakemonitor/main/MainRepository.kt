@@ -1,21 +1,24 @@
 package recio.aitor.earthquakemonitor.main
 
+import androidx.lifecycle.LiveData
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import recio.aitor.earthquakemonitor.Earthquake
 import recio.aitor.earthquakemonitor.api.EqJsonResponse
 import recio.aitor.earthquakemonitor.api.service
+import recio.aitor.earthquakemonitor.database.EqDatabase
 
-class MainRepository {
+class MainRepository(private val database: EqDatabase) {
 
-    suspend fun fetchEarthquakes() : MutableList<Earthquake> {
+    val eqList : LiveData<MutableList<Earthquake>> = database.eqDAO.getEarthquakes()
+
+    suspend fun fetchEarthquakes() {
 
         return withContext(Dispatchers.IO){
             val eqJsonResponse = service.getLastHourEarthquakes()
-
-
             val eqList = parseEqResult(eqJsonResponse)
-            eqList
+
+            database.eqDAO.insertAll(eqList)
         }
     }
 

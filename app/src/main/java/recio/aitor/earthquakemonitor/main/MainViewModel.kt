@@ -1,22 +1,22 @@
 package recio.aitor.earthquakemonitor.main
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.viewModelScope
+import android.app.Application
+import androidx.lifecycle.*
 import kotlinx.coroutines.*
 import recio.aitor.earthquakemonitor.Earthquake
+import recio.aitor.earthquakemonitor.database.getDatabase
 
-class MainViewModel : ViewModel() {
+class MainViewModel(application: Application) : AndroidViewModel(application) {
 
-    private var _eqList = MutableLiveData<MutableList<Earthquake>>()
-    val eqList : LiveData<MutableList<Earthquake>>
-        get() = _eqList
 
-    private val repository = MainRepository()
+    private val database = getDatabase(application)
+    private val repository = MainRepository(database)
+
+    val eqList  = repository.eqList
+
     init {
         viewModelScope.launch {
-            _eqList.value = repository.fetchEarthquakes()
+            repository.fetchEarthquakes()
         }
     }
 

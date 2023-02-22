@@ -21,7 +21,8 @@ class MainActivity : AppCompatActivity() {
         binding.eqRecycler.adapter = adapter
 
         binding.eqRecycler.layoutManager = LinearLayoutManager(this)
-        val viewModel = ViewModelProvider(this).get(MainViewModel::class.java)
+        val viewModel = ViewModelProvider(this,
+            MainViewModelFactory(application )).get(MainViewModel::class.java)
 
         viewModel.eqList.observe(this, Observer {
             eqList ->
