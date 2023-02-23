@@ -8,6 +8,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import recio.aitor.earthquakemonitor.Earthquake
+import recio.aitor.earthquakemonitor.api.ApiResponseStatus
 import recio.aitor.earthquakemonitor.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -28,6 +29,17 @@ class MainActivity : AppCompatActivity() {
             eqList ->
             adapter.submitList(eqList)
             handleEmptyView(eqList, binding)
+        })
+
+        viewModel.status.observe(this, Observer {
+            apiResponseStatus ->
+            if(apiResponseStatus == ApiResponseStatus.LOADING){
+                binding.loadingWheel.visibility = View.VISIBLE
+            }else if(apiResponseStatus == ApiResponseStatus.DONE){
+                binding.loadingWheel.visibility = View.GONE
+            }else if(apiResponseStatus == ApiResponseStatus.ERROR){
+                binding.loadingWheel.visibility = View.GONE
+            }
         })
 
         adapter.onItemClickListener = {
