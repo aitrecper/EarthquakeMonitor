@@ -1,5 +1,6 @@
 package recio.aitor.earthquakemonitor.main
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -10,6 +11,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import recio.aitor.earthquakemonitor.Earthquake
 import recio.aitor.earthquakemonitor.api.ApiResponseStatus
 import recio.aitor.earthquakemonitor.databinding.ActivityMainBinding
+import recio.aitor.earthquakemonitor.details.DetailsActivity
+import recio.aitor.earthquakemonitor.details.DetailsActivity.Companion.EARTHQUAKE_KEY
 
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -43,7 +46,9 @@ class MainActivity : AppCompatActivity() {
         })
 
         adapter.onItemClickListener = {
-            Toast.makeText(this,it.place,Toast.LENGTH_SHORT).show()
+            val intent = Intent(this, DetailsActivity::class.java)
+            intent.putExtra(EARTHQUAKE_KEY,it)
+            startActivity(intent)
         }
 
     }
