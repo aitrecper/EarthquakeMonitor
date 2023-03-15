@@ -10,7 +10,7 @@ import recio.aitor.earthquakemonitor.database.getDatabase
 import java.net.UnknownHostException
 
 private val TAG = MainViewModel::class.java.simpleName
-class MainViewModel(application: Application) : AndroidViewModel(application) {
+class MainViewModel(application: Application, private var sortType : Boolean) : AndroidViewModel(application) {
 
 
     private val database = getDatabase(application)
@@ -20,19 +20,32 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     val status: LiveData<ApiResponseStatus>
         get() = _status
 
-    val eqList  = repository.eqList
+    private val _eqList  = MutableLiveData<MutableList<Earthquake>>()
+    val eqList: LiveData<MutableList<Earthquake>>
+        get() = _eqList
 
     init {
+        reloadEarthquakes()
+    }
+
+
+    private fun reloadEarthquakes() {
         viewModelScope.launch {
-            try{
+            try {
                 _status.value = ApiResponseStatus.LOADING
-                repository.fetchEarthquakes()
+                _eqList.value = repository.fetchEarthquakes(sortType)
                 _status.value = ApiResponseStatus.DONE
-            }catch (e: UnknownHostException){
-                Log.d(TAG,"No Internet Connection", e)
+            } catch (e: UnknownHostException) {
+                Log.d(TAG, "No Internet Connection", e)
                 _status.value = ApiResponseStatus.ERROR
             }
 
+        }
+    }
+
+    fun reloadEarthquakesFromDb(sortByMagnitude:Boolean) {
+        viewModelScope.launch {
+            _eqList.value = repository.fetchEarthquakesFromDb(sortByMagnitude)
         }
     }
 
